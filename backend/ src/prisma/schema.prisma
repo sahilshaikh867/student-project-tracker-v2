@@ -1,1 +1,117 @@
+// ---------------------
+//   STUDENT MODEL
+// ---------------------
+model Student {
+  student_id        Int       @id @default(autoincrement())
+  name              String
+  email             String    @unique
+  password_hash     String
+  department        String?
+  year              Int?
+  
+  assigned_mentor   Mentor?   @relation(fields: [assigned_mentor_id], references: [mentor_id])
+  assigned_mentor_id Int?
+
+  projects          Project[]
+  tasks             Task[]
+  
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+}
+
+// ---------------------
+//   MENTOR MODEL
+// ---------------------
+model Mentor {
+  mentor_id     Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password_hash String
+  department    String?
+  designation   String?
+
+  students      Student[] @relation("MentorStudents")
+  projects      Project[]
+
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+}
+
+// ---------------------
+//   PROJECT MODEL
+// ---------------------
+model Project {
+  project_id         Int       @id @default(autoincrement())
+  project_title      String
+  description        String?
+  project_domain     String?
+  status             String    @default("Not Started")
+  progress_percentage Int      @default(0)
+  start_date         DateTime?
+  end_date           DateTime?
+  repo_url           String?
+
+  student            Student   @relation(fields: [student_id], references: [student_id])
+  student_id         Int
+
+  mentor             Mentor    @relation(fields: [mentor_id], references: [mentor_id])
+  mentor_id          Int
+
+  tasks              Task[]
+  documents          Document[]
+  activity_logs      ActivityLog[]
+
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+}
+
+// ---------------------
+//   TASK MODEL
+// ---------------------
+model Task {
+  task_id        Int       @id @default(autoincrement())
+  task_title     String
+  task_description String?
+  status         String    @default("Pending")
+  due_date       DateTime?
+
+  project        Project   @relation(fields: [project_id], references: [project_id])
+  project_id     Int
+
+  assigned_to    Student?  @relation(fields: [assigned_to_id], references: [student_id])
+  assigned_to_id Int?
+
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+}
+
+// ---------------------
+//   DOCUMENT MODEL
+// ---------------------
+model Document {
+  document_id  Int       @id @default(autoincrement())
+  file_name    String?
+  file_url     String
+
+  project      Project   @relation(fields: [project_id], references: [project_id])
+  project_id   Int
+
+  uploaded_by  Int?
+
+  created_at   DateTime  @default(now())
+}
+
+// ---------------------
+//   ACTIVITY LOG MODEL
+// ---------------------
+model ActivityLog {
+  log_id       Int       @id @default(autoincrement())
+  action       String
+  timestamp    DateTime  @default(now())
+
+  project      Project   @relation(fields: [project_id], references: [project_id])
+  project_id   Int
+
+  performed_by Int
+}
 

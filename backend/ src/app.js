@@ -3,6 +3,7 @@ import cors from "cors";
 import studentRoutes from "./routes/student.routes.js";
 import mentorRoutes from "./routes/mentor.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import taskRoutes from "./routes/task.routes.js";
 
 
 
@@ -13,6 +14,7 @@ app.use("/api/students", studentRoutes);
 app.use(express.json());
 app.use("/api/mentors", mentorRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/tasks", taskRoutes);
 
 
 // Health check endpoint

@@ -1,22 +1,34 @@
 // ---------------------
+//   GENERATOR & DB
+// ---------------------
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"              // or "mysql" if you're using MySQL
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------
 //   STUDENT MODEL
 // ---------------------
 model Student {
-  student_id        Int       @id @default(autoincrement())
-  name              String
-  email             String    @unique
-  password_hash     String
-  department        String?
-  year              Int?
-  
-  assigned_mentor   Mentor?   @relation(fields: [assigned_mentor_id], references: [mentor_id])
-  assigned_mentor_id Int?
+  student_id         Int       @id @default(autoincrement())
+  name               String
+  email              String    @unique
+  password_hash      String
+  department         String?
+  year               Int?
 
-  projects          Project[]
-  tasks             Task[]
-  
-  created_at        DateTime  @default(now())
-  updated_at        DateTime  @updatedAt
+  assigned_mentor_id Int?
+  assigned_mentor    Mentor?   @relation(fields: [assigned_mentor_id], references: [mentor_id])
+
+  projects           Project[]
+  tasks              Task[]
+
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
 }
 
 // ---------------------
@@ -30,7 +42,7 @@ model Mentor {
   department    String?
   designation   String?
 
-  students      Student[] @relation("MentorStudents")
+  students      Student[]
   projects      Project[]
 
   created_at    DateTime  @default(now())
@@ -41,48 +53,48 @@ model Mentor {
 //   PROJECT MODEL
 // ---------------------
 model Project {
-  project_id         Int       @id @default(autoincrement())
-  project_title      String
-  description        String?
-  project_domain     String?
-  status             String    @default("Not Started")
-  progress_percentage Int      @default(0)
-  start_date         DateTime?
-  end_date           DateTime?
-  repo_url           String?
+  project_id          Int          @id @default(autoincrement())
+  project_title       String
+  description         String?
+  project_domain      String?
+  status              String       @default("Not Started")
+  progress_percentage Int          @default(0)
+  start_date          DateTime?
+  end_date            DateTime?
+  repo_url            String?
 
-  student            Student   @relation(fields: [student_id], references: [student_id])
-  student_id         Int
+  student             Student      @relation(fields: [student_id], references: [student_id])
+  student_id          Int
 
-  mentor             Mentor    @relation(fields: [mentor_id], references: [mentor_id])
-  mentor_id          Int
+  mentor              Mentor       @relation(fields: [mentor_id], references: [mentor_id])
+  mentor_id           Int
 
-  tasks              Task[]
-  documents          Document[]
-  activity_logs      ActivityLog[]
+  tasks               Task[]
+  documents           Document[]
+  activity_logs       ActivityLog[]
 
-  created_at         DateTime  @default(now())
-  updated_at         DateTime  @updatedAt
+  created_at          DateTime     @default(now())
+  updated_at          DateTime     @updatedAt
 }
 
 // ---------------------
 //   TASK MODEL
 // ---------------------
 model Task {
-  task_id        Int       @id @default(autoincrement())
-  task_title     String
+  task_id         Int       @id @default(autoincrement())
+  task_title      String
   task_description String?
-  status         String    @default("Pending")
-  due_date       DateTime?
+  status          String    @default("Pending")
+  due_date        DateTime?
 
-  project        Project   @relation(fields: [project_id], references: [project_id])
-  project_id     Int
+  project         Project   @relation(fields: [project_id], references: [project_id])
+  project_id      Int
 
-  assigned_to    Student?  @relation(fields: [assigned_to_id], references: [student_id])
-  assigned_to_id Int?
+  assigned_to_id  Int?
+  assigned_to     Student?  @relation(fields: [assigned_to_id], references: [student_id])
 
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
 }
 
 // ---------------------
@@ -114,4 +126,3 @@ model ActivityLog {
 
   performed_by Int
 }
-

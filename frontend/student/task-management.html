@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task Management</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script type="module" src="../assets/js/task.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>Task Management</h2>
+
+        <!-- CREATE TASK FORM -->
+        <section class="task-form">
+            <h3>Create New Task</h3>
+
+            <input type="text" id="task-title" placeholder="Task Title">
+            <textarea id="task-desc" placeholder="Task Description"></textarea>
+
+            <select id="task-status">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <input type="date" id="task-date">
+
+            <button id="create-task-btn">Create Task</button>
+        </section>
+
+        <!-- TASK LIST -->
+        <section class="task-section">
+            <h3>Project Tasks</h3>
+            <ul id="task-list">Loading tasks...</ul>
+        </section>
+
+    </div>
+
+</body>
+
+</html>

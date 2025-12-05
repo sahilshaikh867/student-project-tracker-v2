@@ -66,4 +66,7 @@ async function loadProject() {
 }
 
 window.onload = loadProject;
+document.getElementById("go-task-btn").onclick = function () {
+    window.location.href = `../student/task-management.html?project=${projectId}`;
+};
 

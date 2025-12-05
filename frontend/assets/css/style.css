@@ -52,3 +52,14 @@ header {
     background: #eee;
 }
 
+.project-item {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.project-item:hover {
+    background: #f0f0f0;
+}
+
+

@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  student_id    Int    @id @default(autoincrement())
+  name          String
+  email         String @unique
+  password_hash String
+
+  mentor_id Int?
+  mentor    Mentor? @relation("MentorStudents", fields: [mentor_id], references: [mentor_id])
+
+  projects Project[]
+  tasks    Task[]
+}
+
+model Mentor {
+  mentor_id     Int    @id @default(autoincrement())
+  name          String
+  email         String @unique
+  password_hash String
+
+  students Student[] @relation("MentorStudents")
+  projects Project[]
+}
+
+model Project {
+  project_id          Int    @id @default(autoincrement())
+  project_title       String
+  description         String
+  project_domain      String
+  status              String
+  progress_percentage Int
+
+  student_id Int
+  mentor_id  Int
+
+  student Student @relation(fields: [student_id], references: [student_id])
+  mentor  Mentor  @relation(fields: [mentor_id], references: [mentor_id])
+
+  tasks         Task[]
+  documents     Document[]
+  activity_logs ActivityLog[]
+}
+
+model Task {
+  task_id          Int       @id @default(autoincrement())
+  task_title       String
+  task_description String
+  status           String
+  due_date         DateTime?
+
+  project_id     Int
+  assigned_to_id Int
+
+  project     Project @relation(fields: [project_id], references: [project_id])
+  assigned_to Student @relation(fields: [assigned_to_id], references: [student_id])
+}
+
+model Document {
+  document_id Int    @id @default(autoincrement())
+  file_name   String
+  file_url    String
+  uploaded_by Int
+
+  project_id Int
+  project    Project @relation(fields: [project_id], references: [project_id])
+}
+
+model ActivityLog {
+  log_id    Int      @id @default(autoincrement())
+  action    String
+  timestamp DateTime @default(now())
+
+  project_id Int
+  project    Project @relation(fields: [project_id], references: [project_id])
+}

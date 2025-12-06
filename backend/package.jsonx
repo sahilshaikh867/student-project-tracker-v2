@@ -1,0 +1,4 @@
+"prisma": {
+  "seed": "node prisma/seed.ts"
+}
+

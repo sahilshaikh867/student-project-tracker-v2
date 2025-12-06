@@ -9,7 +9,8 @@ class ProjectService {
         student: true,
         mentor: true,
         tasks: true,
-        documents: true
+        documents: true,
+        activity_logs: true     // ADDED
       }
     });
   }
@@ -28,8 +29,14 @@ class ProjectService {
     });
   }
 
-  // CREATE project
+  // CREATE project (safe)
   static async createProject(data) {
+
+    // Required fields check
+    if (!data.student_id || !data.mentor_id) {
+      throw new Error("student_id and mentor_id are required");
+    }
+
     return prisma.project.create({
       data
     });

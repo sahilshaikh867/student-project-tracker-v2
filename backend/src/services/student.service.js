@@ -1,12 +1,13 @@
 import prisma from "../config/prisma.js";
 
 class StudentService {
+
   // Get all students
   static async getAllStudents() {
     return prisma.student.findMany({
       include: {
-        assigned_mentor: true,
-        projects: true
+        mentor: true,      // FIXED
+        projects: true     // VALID
       }
     });
   }
@@ -16,8 +17,8 @@ class StudentService {
     return prisma.student.findUnique({
       where: { student_id: Number(id) },
       include: {
-        assigned_mentor: true,
-        projects: true,
+        mentor: true,      // FIXED
+        projects: true
       }
     });
   }
@@ -46,4 +47,3 @@ class StudentService {
 }
 
 export default StudentService;
-

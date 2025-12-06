@@ -5,13 +5,15 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
+
 }
 
 model Student {
   student_id    Int    @id @default(autoincrement())
   name          String
   email         String @unique
-  password_hash String
+  password_hash String @db.VarChar(100)
+
 
   mentor_id Int?
   mentor    Mentor? @relation("MentorStudents", fields: [mentor_id], references: [mentor_id])
@@ -24,7 +26,7 @@ model Mentor {
   mentor_id     Int    @id @default(autoincrement())
   name          String
   email         String @unique
-  password_hash String
+  password_hash String @db.VarChar(100)
 
   students Student[] @relation("MentorStudents")
   projects Project[]

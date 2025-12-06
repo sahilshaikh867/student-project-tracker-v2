@@ -1,128 +1,98 @@
-// ---------------------
-//   GENERATOR & DB
-// ---------------------
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"              // or "mysql" if you're using MySQL
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-// ---------------------
-//   STUDENT MODEL
-// ---------------------
 model Student {
-  student_id         Int       @id @default(autoincrement())
-  name               String
-  email              String    @unique
-  password_hash      String
-  department         String?
-  year               Int?
-
-  assigned_mentor_id Int?
-  assigned_mentor    Mentor?   @relation(fields: [assigned_mentor_id], references: [mentor_id])
-
-  projects           Project[]
-  tasks              Task[]
-
-  created_at         DateTime  @default(now())
-  updated_at         DateTime  @updatedAt
-}
-
-// ---------------------
-//   MENTOR MODEL
-// ---------------------
-model Mentor {
-  mentor_id     Int       @id @default(autoincrement())
+  student_id    Int      @id @default(autoincrement())
   name          String
-  email         String    @unique
-  password_hash String
-  department    String?
-  designation   String?
+  email         String   @unique
+  password_hash String   // NO VARCHAR — SQLite stores full 60 chars
 
-  students      Student[]
-  projects      Project[]
+  mentor_id Int?
+  mentor    Mentor? @relation(fields: [mentor_id], references: [mentor_id])
 
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  projects Project[]
+  tasks    Task[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
-// ---------------------
-//   PROJECT MODEL
-// ---------------------
+model Mentor {
+  mentor_id     Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password_hash String
+
+  department  String?
+  designation String?
+
+  students Student[]
+  projects Project[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
 model Project {
-  project_id          Int          @id @default(autoincrement())
+  project_id          Int      @id @default(autoincrement())
   project_title       String
-  description         String?
+  description         String
   project_domain      String?
-  status              String       @default("Not Started")
-  progress_percentage Int          @default(0)
+  status              String   @default("Not Started")
+  progress_percentage Int      @default(0)
   start_date          DateTime?
   end_date            DateTime?
   repo_url            String?
 
-  student             Student      @relation(fields: [student_id], references: [student_id])
-  student_id          Int
+  student_id Int
+  mentor_id  Int
 
-  mentor              Mentor       @relation(fields: [mentor_id], references: [mentor_id])
-  mentor_id           Int
+  student Student @relation(fields: [student_id], references: [student_id])
+  mentor  Mentor  @relation(fields: [mentor_id], references: [mentor_id])
 
-  tasks               Task[]
-  documents           Document[]
-  activity_logs       ActivityLog[]
+  tasks         Task[]
+  documents     Document[]
+  activity_logs ActivityLog[]
 
-  created_at          DateTime     @default(now())
-  updated_at          DateTime     @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
-// ---------------------
-//   TASK MODEL
-// ---------------------
 model Task {
-  task_id         Int       @id @default(autoincrement())
-  task_title      String
-  task_description String?
-  status          String    @default("Pending")
-  due_date        DateTime?
+  task_id          Int      @id @default(autoincrement())
+  task_title       String
+  task_description String
+  status           String
+  due_date         DateTime?
 
-  project         Project   @relation(fields: [project_id], references: [project_id])
-  project_id      Int
+  project_id     Int
+  assigned_to_id Int
 
-  assigned_to_id  Int?
-  assigned_to     Student?  @relation(fields: [assigned_to_id], references: [student_id])
-
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
+  project     Project @relation(fields: [project_id], references: [project_id])
+  assigned_to Student @relation(fields: [assigned_to_id], references: [student_id])
 }
 
-// ---------------------
-//   DOCUMENT MODEL
-// ---------------------
 model Document {
-  document_id  Int       @id @default(autoincrement())
-  file_name    String?
-  file_url     String
+  document_id Int      @id @default(autoincrement())
+  file_name   String
+  file_url    String
+  uploaded_by Int
 
-  project      Project   @relation(fields: [project_id], references: [project_id])
-  project_id   Int
-
-  uploaded_by  Int?
-
-  created_at   DateTime  @default(now())
+  project_id Int
+  project    Project @relation(fields: [project_id], references: [project_id])
 }
 
-// ---------------------
-//   ACTIVITY LOG MODEL
-// ---------------------
 model ActivityLog {
-  log_id       Int       @id @default(autoincrement())
-  action       String
-  timestamp    DateTime  @default(now())
+  log_id    Int      @id @default(autoincrement())
+  action    String
+  timestamp DateTime @default(now())
 
-  project      Project   @relation(fields: [project_id], references: [project_id])
-  project_id   Int
-
-  performed_by Int
+  project_id Int
+  project    Project @relation(fields: [project_id], references: [project_id])
 }
